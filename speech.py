@@ -1,21 +1,23 @@
-import whisper
-import streamlit as st
+from openai import OpenAI
+from config import API_KEY
 
 
-@st.cache_resource
-def load_whisper():
-
-    return whisper.load_model("tiny")
-
-
-model = load_whisper()
+client = OpenAI(
+    api_key=API_KEY
+)
 
 
 def speech_to_text(audio_file):
 
-    result = model.transcribe(
+    audio = open(
         audio_file,
+        "rb"
+    )
+
+    result = client.audio.transcriptions.create(
+        model="whisper-1",
+        file=audio,
         language="zh"
     )
 
-    return result["text"]
+    return result.text
