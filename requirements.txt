@@ -2,3 +2,4 @@ streamlit
 openai
 openai-whisper
 audio-recorder-streamlit
+ffmpeg-python
