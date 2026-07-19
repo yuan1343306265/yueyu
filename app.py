@@ -1,16 +1,43 @@
 import streamlit as st
+from audio_recorder_streamlit import audio_recorder
 
 from main import translate_cantonese
+from speech import speech_to_text
 
 
-st.title("粤语翻译 Agent")
+st.title("粤语 AI 翻译 ")
 
-st.write("输入粤语，AI自动翻译成普通话")
+st.write("支持粤语语音识别 ")
 
 
 text = st.text_area(
-    "请输入粤语："
+    "输入粤语文字"
 )
+
+
+st.write("或者直接录音")
+
+
+audio_file = st.file_uploader(
+    "上传粤语音频",
+    type=["mp3", "wav", "m4a"]
+)
+
+if audio_file:
+
+    with open("test_audio.mp3","wb") as f:
+        f.write(audio_file.read())
+
+    text = speech_to_text(
+        "test_audio.mp3"
+    )
+
+    st.write("识别结果：")
+    st.write(text)
+
+    
+
+
 
 
 if st.button("翻译"):
@@ -19,10 +46,4 @@ if st.button("翻译"):
 
         result = translate_cantonese(text)
 
-        st.success("翻译结果")
-
-        st.write(result)
-
-    else:
-
-        st.warning("请输入内容")
+        st.success(result)
