@@ -1,23 +1,30 @@
-from openai import OpenAI
-from config import API_KEY
+from faster_whisper import WhisperModel
+import streamlit as st
 
 
-client = OpenAI(
-    api_key=API_KEY
-)
+@st.cache_resource
+def get_model():
 
-
-def speech_to_text(audio_file):
-
-    audio = open(
-        audio_file,
-        "rb"
+    return WhisperModel(
+        "tiny",
+        device="cpu",
+        compute_type="int8"
     )
 
-    result = client.audio.transcriptions.create(
-        model="whisper-1",
-        file=audio,
+
+model = get_model()
+
+
+def speech_to_text(audio_path):
+
+    segments, info = model.transcribe(
+        audio_path,
         language="zh"
     )
 
-    return result.text
+    text = ""
+
+    for segment in segments:
+        text += segment.text
+
+    return text
